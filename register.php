@@ -72,7 +72,8 @@ if( $_SERVER['REQUEST_METHOD'] == "POST") {
 ?>
 <html>
 <head>
-
+	<title>Register</title>
+	<link rel="stylesheet" href="regstyle.css">
 </head>
 <body>
 <header>
@@ -85,14 +86,20 @@ if( $_SERVER['REQUEST_METHOD'] == "POST") {
     ?>
   </div>
 </header>
-  <form action = "register.php" method = "post">
-    <label for = "name">Name</label><input type="text" name = "name" value="<?php if(isset($_POST['name'])){echo $_POST['name'];}?>"/>
-    <label for = "password">Password</label><input type="password" name = "password" />
-    <label for = "college">College</label><input type="text" name = "college" value="<?php if(isset($_POST['name'])){echo $_POST['college'];}?>"/>
-    <label for = "email">Email</label><input type="email" name = "email" value="<?php if(isset($_POST['name'])){echo $_POST['email'];}?>"/>
-    <label for = "number">Number</label><input type="number" name = "number" value="<?php if(isset($_POST['name'])){echo $_POST['number'];}?>"/>
-    <label for = "age">Age</label><input type="number" name = "age" value="<?php if(isset($_POST['name'])){echo $_POST['age'];}?>"/>
-    <input type = "submit" value = "Register"/>
-  </form>
+	<div class="box">
+	  <form action="register.php" method="post">
+		<ul class="list">
+			<li class="main"><strong>Registration Form:</strong></li>
+			<li>Name: <input class="inp" type="text" name="name" value="<?php if(isset($_POST['name'])){echo $_POST['name'];} ?>"/></li>
+			<li>Password: <input class="inp" type="password" name ="password"/></li>
+			<li>College: <input class="inp" type="text" name="<?php if(isset($_POST['name'])){echo $_POST['college'];}?>" value="college"/></li>
+			<li>Email: <input class="inp" type="email" name="email" value="<?php if(isset($_POST['name'])){echo $_POST['email'];}?>"/></li>
+			<li>Number: <input class="inp" type="number" name="number" value="<?php if(isset($_POST['name'])){echo $_POST['number'];}?>"/></li>
+			<li>Age: <input class="inp" type="number" name="age" value="<?php if(isset($_POST['name'])){echo $_POST['age'];}?>"/></li>
+		</ul>
+		<center><input class="button" type="submit" value="Register"/></center>
+	  </form>
+	</div>
+
 </body>
 </html>
