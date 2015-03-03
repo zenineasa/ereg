@@ -1,0 +1,71 @@
+@font-face{
+font-family: hand;
+src:url('Tangerine_Regular.ttf');
+}
+body {
+background-color :#efefef;
+padding: 2em;
+}
+h4 {
+color: #cd0000;
+font-size: 2.2em;
+letter-spacing: -2px;
+text-align: left;
+}
+.list {
+color: #555;
+font-size: 1.4em;
+padding: 0 !important;
+width: 25em;
+font-family: courier, monospace;
+border: 1px 0px solid #dedede;
+}
+.list li {
+font-family:hand;
+font-size:1.5em;
+list-style: none;
+border-bottom: 1px dotted #ccc;
+text-indent: 25px;
+height: auto;
+padding: 10px;
+text-transform: capitalize;
+}
+.list li:hover {
+background-color: #f0f0f0;
+-webkit-transition: all 0.2s;
+-moz-transition:all 0.2s;
+-ms-transition: all 0.2s;
+-o-transition:all 0.2s;
+}
+.list .main{
+text-align:center;
+font-size:1.75em;
+}
+.box{
+background:#fff;
+border: 1px solid #dedede;
+position:absolute;
+left:50%;
+transform:translateX(-50%);
+}
+.box .inp{
+font-family:hand;
+float:right;
+width:9.5em;
+font-size:1.2em;
+border:0;
+transform:translateY(-10%);
+}
+.button{
+font-family:hand;
+background:#f0f0f0;
+width:50%;
+padding:0.5em;
+border-radius:0.2em;
+font-size:1.8em;
+text-align:center;
+}
+.button:hover{
+background: #8ab7cb;
+color:#fff;
+}
