@@ -32,24 +32,26 @@ if( $_SERVER['REQUEST_METHOD'] == "POST") {
 }
 ?>
 <html>
-  <head>
-
-  </head>
-  <body>
-    <header>
-      <?php
-      if( isset( $_SESSION['err'] ) ) {
-        echo $_SESSION['err'];
-        unset( $_SESSION['err'] );
-      }
-      ?>
-    </header>
-    <div class = "login">
-      <form action = "login.php" method = "post">
-        <label for = "name" >Username</label><input type = "text" name="name" value = "<?php if(isset($_POST['name'])){echo $_POST['name'];}?>"/>
-        <label for = "password">Password</label><input type = "password" name = "password"/>
-        <input type = "submit" value = "submit"/>
-      </form>
-    </div>
-  </body>
+	<head>
+		<title>Login</title>
+		<link rel="stylesheet" href="loginstyle.css" />
+	</head>
+	<body>
+		<header>
+			<?php
+			if( isset( $_SESSION['err'] ) ) {
+			echo $_SESSION['err'];
+			unset( $_SESSION['err'] );
+			}
+			?>
+		</header>
+		<div class="login">
+			<h1>Login</h1>
+			<form action="login.php" method="post">
+				<input class="inp" type="text" name="name" value="<?php if(isset($_POST['name'])){echo $_POST['name'];}?>" required="required" placeholder="Username"/>
+				<input class="inp" type="password" name="password" required="required" placeholder="Password"/>
+				<input class="button" type="submit" value="Login"/>
+			</form>
+		</div>
+	</body>
 </html>
