@@ -1,7 +1,7 @@
 <?php
 require_once 'db.php';
 session_start();
-if( $_SERVER['REQUEST_METHOD'] == "POST") {
+if( $_SERVER['REQUEST_METHOD'] == "POST" ) {
   if( !isset( $_POST['name'],$_POST['password'] ) ) {
     $_SESSION['err'] = "Please enter both fields";
     header("Loaction:login.php");
@@ -9,25 +9,32 @@ if( $_SERVER['REQUEST_METHOD'] == "POST") {
   $name = mysql_real_escape_string( $_POST[ 'name' ] );
   $password = strip_tags( $_POST[ 'password' ] );
 
-  $query = "SELECT (*) FROM `users` WHERE name=?";
+  $query = "SELECT * FROM `users` WHERE name=?";
   $stmt = $db_connection->prepare($query);
-  $rc = $stmt->bind_param("s", $name);
+  if(!$stmt) {
+    die("Failed to prepare");
+  }
+  $rc = $stmt->bind_param("s",$name);
   $rc = $stmt->execute();
   $result = $stmt->get_result();
-  $result = $result->fetch_array();
+  $result = $result->fetch_array( MYSQLI_ASSOC );
   $stmt->close();
   if( empty($result) ) {
     $_SESSION['err'] = "username or password is incorrect";
     //header("Loaction:login.php");
   }
   $salt = $result['salt'];
-  $hash = crypt($pass, $salt);
-  if( $hash === $result['hash'] ) {
+  $hash = hash('sha256',$pass.$salt);
+  if( $hash === $result['pass'] ) {
     $_SESSION['user'] = $name;
     header('Location:profile.php');
   } else {
-    $_SESSION['err'] = "username or password is incorrect $hash";
+    $_SESSION['err'] = "username or password is incorrect $hash ".$result['pass'];
     header("Loaction:login.php");
+  }
+} else if( $_SERVER['REQUEST_METHOD'] === "GET" ) {
+  if( isset( $_SESSION['err'] ) ) {
+    $_SESSION['err'] = $_GET['err'];
   }
 }
 ?>
