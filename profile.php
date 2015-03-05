@@ -88,6 +88,7 @@ $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);*/
 			$error = "";
 			//first check to see if something has been sent by get request
 			if( isset( $_GET['evid'] ) ) {
+				$id = (int)$_GET['evid'];
 				$query = "SELECT * FROM `events` where id=?";
 				$stmt = $db_connection->prepare($query);
 				if(false===$stmt) {
@@ -100,15 +101,22 @@ $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);*/
 				}
 				$event = $stmt->get_result();
 				if( count($event) == 1 ) {
-					$string = "<h2>".$event['name']."h2";
-					$string .= '<div class="desc">'.$event['desc'].'</div>';
-					$string .= '<div class="poster"><img src="'. $event['image']
+					$event = $event->fetch_array(MYSQLI_ASSOC);
+					$str = "<h2>".$event['name']."</h2>";
+					$str .= '<div class="desc">'.$event['desc'].'</div>';
+					$url = $_SERVER['REQUEST_URI'];
+					$url = explode('/',$url);
+					$path = "";
+					for( $i = 0; $i < count($url)-1; $i++ ) {
+						$path .= $url[$i]."/";
+					}
+					$str .= '<div class="poster"><img src="'. $path.$event['image']
 					.'">'.'</div>';
-					$eventdata = $string;
+					$eventdata = $str;
 				}
 				//invalid get request
 			}
-			if( !empty( $event ) ) {
+			if( !empty( $eventdata ) ) {
 				echo $eventdata;
 			} else {
 				//output first event

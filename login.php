@@ -33,7 +33,7 @@ if( $_SERVER['REQUEST_METHOD'] == "POST" ) {
     header("Loaction:login.php");
   }
 } else if( $_SERVER['REQUEST_METHOD'] === "GET" ) {
-  if( isset( $_SESSION['err'] ) ) {
+  if( isset( $_GET['err'] ) ) {
     $_SESSION['err'] = $_GET['err'];
   }
 }
