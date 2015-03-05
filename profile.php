@@ -2,7 +2,25 @@
 require_once 'check.php';
 require_once 'db.php';
 function getEventData( $id ) {
-
+	$query = "SELECT * FROM `events` where id=?";
+	$stmt = $db_connection->prepare($query);
+	if(false===$stmt) {
+		die('prepare() failed: ' . htmlspecialchars($mysqli->error));
+	}
+	$rc = $stmt->bind_param("i",$id);
+	$rc = $stmt->execute();
+	if(false===$rc) {
+		die('execute() failed: ' . htmlspecialchars($stmt->error));
+	}
+	$event = $stmt->get_result();
+	if( count($event) < 1 ) {
+		throw new Exception("Event does not exist");
+	} else {
+		$string = "<h2>".$event['name']."h2";
+		$string .= '<div class="desc">'.$event['desc'].'</div>';
+		$string .= '<div class="poster"><img src="'. $event['image'] .'">'.'</div>';
+		return $string;
+	}
 }
 //echo "hello".$_SESSION['user'];
 // Get event details if not already stored
@@ -66,10 +84,10 @@ $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);*/
 	</div>
 	<div class="main">
 		<?php
+			$eventdata = "";
 			$error = "";
 			//first check to see if something has been sent by get request
 			if( isset( $_GET['evid'] ) ) {
-				$id = $_GET['evid'];
 				$query = "SELECT * FROM `events` where id=?";
 				$stmt = $db_connection->prepare($query);
 				if(false===$stmt) {
@@ -81,15 +99,44 @@ $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);*/
 					die('execute() failed: ' . htmlspecialchars($stmt->error));
 				}
 				$event = $stmt->get_result();
-				//invalid get request
-				if( count($event) < 1 ) {
-					$error = "Invalid request";
+				if( count($event) == 1 ) {
+					$string = "<h2>".$event['name']."h2";
+					$string .= '<div class="desc">'.$event['desc'].'</div>';
+					$string .= '<div class="poster"><img src="'. $event['image']
+					.'">'.'</div>';
+					$eventdata = $string;
 				}
+				//invalid get request
 			}
-			if( !empty( $error ) ) {
-
+			if( !empty( $event ) ) {
+				echo $eventdata;
 			} else {
-
+				//output first event
+				$query = "SELECT * FROM `events` where id=1";
+				$stmt = $db_connection->prepare($query);
+				if(false===$stmt) {
+					die('prepare() failed: ' . htmlspecialchars($mysqli->error));
+				}
+				$rc = $stmt->execute();
+				if(false===$rc) {
+					die('execute() failed: ' . htmlspecialchars($stmt->error));
+				}
+				$event = $stmt->get_result();
+				if( count($event) == 1 ) {
+					$event = $event->fetch_array(MYSQLI_ASSOC);
+					$str = "<h2>".$event['name']."</h2>";
+					$str .= '<div class="desc">'.$event['desc'].'</div>';
+					$url = $_SERVER['REQUEST_URI'];
+					$url = explode('/',$url);
+					$path = "";
+					for( $i = 0; $i < count($url)-1; $i++ ) {
+						$path .= $url[$i]."/";
+					}
+					$str .= '<div class="poster"><img src="'. $path.$event['image']
+					.'">'.'</div>';
+					$eventdata = $str;
+					echo $eventdata;
+				}
 			}
 		?>
 	</div>
