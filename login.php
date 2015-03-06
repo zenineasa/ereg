@@ -1,10 +1,16 @@
 <?php
 require_once 'db.php';
+require_once 'csrf.php';
 session_start();
 if( $_SERVER['REQUEST_METHOD'] == "POST" ) {
-  if( !isset( $_POST['name'],$_POST['password'] ) ) {
+  if( !check_csrf($_POST['CSRF']) ) {
+    $error = "Sorry! Invalid request";
+    $_SESSION['err'] = $error;
+    //errorRedirect($error,"register.php");
+  }else if( !isset( $_POST['name'],$_POST['password'] ) ) {
     $_SESSION['err'] = "Please enter both fields";
-    header("Loaction:login.php");
+  } else if( empty( $_POST['name'] ) || empty($_POST['password']) ) {
+    $_SESSION['err'] = "Fields cannot be empty";
   }
   $name = mysql_real_escape_string( $_POST[ 'name' ] );
   $password = strip_tags( $_POST[ 'password' ] );
@@ -30,7 +36,7 @@ if( $_SERVER['REQUEST_METHOD'] == "POST" ) {
     header('Location:profile.php');
   } else {
     $_SESSION['err'] = "username or password is incorrect $hash ".$result['pass'];
-    header("Loaction:login.php");
+    //header("Loaction:login.php");
   }
 } else if( $_SERVER['REQUEST_METHOD'] === "GET" ) {
   if( isset( $_GET['err'] ) ) {
@@ -52,13 +58,15 @@ if( $_SERVER['REQUEST_METHOD'] == "POST" ) {
 			}
 			?>
 		</header>
+    <h2 class="heading">Entrepreneurship cell IIT Patna E-Week login</h2>
 		<div class="login">
 			<h1>Login</h1>
 			<form action="login.php" method="post">
 				<input class="inp" type="text" name="name" value="<?php if(isset($_POST['name'])){echo $_POST['name'];}?>" required="required" placeholder="Username"/>
 				<input class="inp" type="password" name="password" required="required" placeholder="Password"/>
 				<input class="button" type="submit" value="Login"/>
-			</form>
+        <input type="hidden" name = "CSRF" value="<?php $_SESSION['csrf'] = generate_csrf(); echo $_SESSION['csrf']; ?>">
+      </form>
 		</div>
 	</body>
 </html>

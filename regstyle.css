@@ -1,7 +1,4 @@
-@font-face{
-font-family: hand;
-src:url('Tangerine_Regular.ttf');
-}
+@import url('fonts/tangerine.css');
 body {
 background-color :#efefef;
 padding: 2em;

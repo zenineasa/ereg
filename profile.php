@@ -57,6 +57,7 @@ $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);*/
 	</head>
 	<header><div class="cred">
 		<span><?php echo "Welcome ".$_SESSION['user']; ?></span>
+
 	</div></header>
 	<div class="sidebar">
 		<ul class="events">
@@ -76,8 +77,10 @@ $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);*/
 				$events = $stmt->get_result();
 				//$events = $_SESSION['events'];
 				//echo var_dump($events);
+				$i = 1;
 				while($row = $events->fetch_array(MYSQLI_ASSOC)) {
-					?><li><?php echo $row['name'] ?></li><?php
+					?><a href="<?php echo 'profile.php?evid='.$i?>"><li><?php echo $row['name'] ?></li>
+					</a><?php $i++;
 				}
 			?>
 		</ul>
