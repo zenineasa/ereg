@@ -54,6 +54,7 @@ $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);*/
 	<head>
 		<title>Welcome</title>
 		<link rel="stylesheet" href="profilestyle.css" />
+		<link rel="stylesheet" href="reset.css" />
 	</head>
 
 	<body>
