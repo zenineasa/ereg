@@ -65,20 +65,10 @@ $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);*/
 				//tried storing the data to avoid multiple data access in
 				//session but failed, fixme!
 				$query = "SELECT * FROM `events`";
-				$stmt = $db_connection->prepare($query);
-				if(false===$stmt) {
-			      die('prepare() failed: ' . htmlspecialchars($mysqli->error));
-			    }
-				//$rc = $stmt->bind_param();
+				$stmt = $db->prepare($query);
 				$rc = $stmt->execute();
-				if(false===$rc) {
-			      die('execute() failed: ' . htmlspecialchars($stmt->error));
-			    }
-				$events = $stmt->get_result();
-				//$events = $_SESSION['events'];
-				//echo var_dump($events);
 				$i = 1;
-				while($row = $events->fetch_array(MYSQLI_ASSOC)) {
+				while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 					?><a href="<?php echo 'profile.php?evid='.$i?>"><li><?php echo $row['name'] ?></li>
 					</a><?php $i++;
 				}
@@ -93,18 +83,11 @@ $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);*/
 			if( isset( $_GET['evid'] ) ) {
 				$id = (int)$_GET['evid'];
 				$query = "SELECT * FROM `events` where id=?";
-				$stmt = $db_connection->prepare($query);
-				if(false===$stmt) {
-					die('prepare() failed: ' . htmlspecialchars($mysqli->error));
-				}
-				$rc = $stmt->bind_param("i",$id);
-				$rc = $stmt->execute();
-				if(false===$rc) {
-					die('execute() failed: ' . htmlspecialchars($stmt->error));
-				}
-				$event = $stmt->get_result();
+				$stmt = $db->prepare($query);
+				$rc = $stmt->execute(array($id));
+				$event = $stmt->fetchAll(PDO::FETCH_ASSOC);
 				if( count($event) == 1 ) {
-					$event = $event->fetch_array(MYSQLI_ASSOC);
+					$event = $event[0];
 					$str = "<h2>".$event['name']."</h2>";
 					$str .= '<div class="desc">'.$event['desc'].'</div>';
 					$url = $_SERVER['REQUEST_URI'];
@@ -124,17 +107,11 @@ $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);*/
 			} else {
 				//output first event
 				$query = "SELECT * FROM `events` where id=1";
-				$stmt = $db_connection->prepare($query);
-				if(false===$stmt) {
-					die('prepare() failed: ' . htmlspecialchars($mysqli->error));
-				}
+				$stmt = $db->prepare($query);
 				$rc = $stmt->execute();
-				if(false===$rc) {
-					die('execute() failed: ' . htmlspecialchars($stmt->error));
-				}
-				$event = $stmt->get_result();
+				$event = $stmt->fetchAll(PDO::FETCH_ASSOC);
 				if( count($event) == 1 ) {
-					$event = $event->fetch_array(MYSQLI_ASSOC);
+					$event = $event[0];
 					$str = "<h2>".$event['name']."</h2>";
 					$str .= '<div class="desc">'.$event['desc'].'</div>';
 					$url = $_SERVER['REQUEST_URI'];

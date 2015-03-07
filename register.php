@@ -30,69 +30,79 @@ if( $_SERVER['REQUEST_METHOD'] == "POST") {
     $_SESSION['err'] = $error;
     //errorRedirect($error,"register.php");
     //preg_match( '/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/', $_POST[ 'email' ] )
-  }else if ( !filter_var($email,FILTER_VALIDATE_EMAIL) === false ) {
+  }else if ( !filter_var($_POST['email'],FILTER_VALIDATE_EMAIL)) {
     $error = "Invalid email";
     $_SESSION['err'] = $error;
     //errorRedirect($error,"register.php");
-  } else if(!filter_var($age,FILTER_VALIDATE_INT) === false) {
+  } else if(!filter_var($_POST['age'],FILTER_VALIDATE_INT)) {
   	$error = "Age must be numeric";
   	$_SESSION['err'] = $error;
-  }
-  $name = mysql_real_escape_string( $_POST[ 'name' ] );
-  $password = strip_tags( $_POST[ 'password' ] );
-  $college = strip_tags( trim( $_POST[ 'college' ] ) );
-  $email = mysql_real_escape_string(trim( $_POST[ 'email' ] ));
+  } /*else if(!filter_var($_POST['name'],FILTER_VALIDATE_REGEXP,'/[a-zA-Z_\.]/')) {
+  	$error = "Only letters,digits underscore and dot allowed in usernames";
+  	$_SESSION['err'] = $error;
+  }*/
+  //$name = mysql_real_escape_string( $_POST[ 'name' ] );
+  //$password = strip_tags( $_POST[ 'password' ] );
+  //$college = strip_tags( trim( $_POST[ 'college' ] ) );
+  //$email = mysql_real_escape_string(trim( $_POST[ 'email' ] ));
   /*if(!(is_int($_POST['number'])&&is_int($_POST['age']))) {
     $error = "Age and number must be numeric";
     $_SESSION['err'] = $error;
     //header("Location:register.php");
   }*/
-  $number = mysql_real_escape_string($_POST['number']);
-  $age = mysql_real_escape_string($_POST['age']);
+  //$number = mysql_real_escape_string($_POST['number']);
+  //$age = mysql_real_escape_string($_POST['age']);
   //http://www.sanwebe.com/2013/03/basic-php-mysqli-usage
+  $name = $_POST['name'];
+  $pass = $_POST['password'];
   $query = "SELECT * FROM `users` "
-            . "WHERE name=?";
-  $stmt = $db_connection->prepare($query);
-  $stmt->bind_param("s",$name);
-  $stmt->execute();
-  $result = $stmt->get_result();
-  $result = $result->fetch_array();
-  $stmt->close();
+            . "WHERE name=? OR email = ?";
+  try{
+  	$stmt = $db->prepare($query);
+  	$stmt->execute(array($_POST['name'],$_POST['email']));
+  } catch( PDOException $e ) {
+  	echo "Query error ".$e->getMessage();
+  }
+
+  $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
   if (count($result) != 0) {
-        $error = "Username already taken! Please choose another!".var_dump($result);
+        $error = "Username or email already taken! Please choose another!".var_dump($result);
         $_SESSION['err'] = $error;
         //errorRedirect($error,"register.php");
         //header("Location:register.php");
     }
   if(!isset($_SESSION['err'])){
     $len = 32;
-    $salt = mcrypt_create_iv($len);
-    $hash = hash('sha256',$pass.$salt);
-    $query = "INSERT INTO `users` (`name`,`college`,`number`,`age`,`pass`,`salt`) ".
+    //$salt = mcrypt_create_iv($len);
+    $hash = password_hash($pass,PASSWORD_DEFAULT);
+    $query = "INSERT INTO `users` (`name`,`email`,`college`,`number`,`age`,`pass`) ".
     "VALUES (?,?,?,?,?,?)";
     //http://stackoverflow.com/questions/2552545/mysqli-prepared-statements-error-reporting
-    $stmt = $db_connection->prepare($query);
-    if(false===$stmt) {
-      die('prepare() failed: ' . htmlspecialchars($mysqli->error));
+    try {
+    	$stmt = $db->prepare($query);
+    	$stmt->execute(array($_POST['name'],
+    		$_POST['email'],
+    		$_POST['college'],
+    		$_POST['number'],
+  			$_POST['age'],$hash
+    	));
+    } catch( PDOException $e ) {
+    	echo "Query error ".$e->getMessage();
     }
-    $rc = $stmt->bind_param("ssssss", $name, $college, $number,$age,$hash,$salt);
-    if(false===$rc) {
-      die('bind_param() failed: ' . htmlspecialchars($stmt->error));
+    if($db->errorCode()!='0') {
+    	$_SESSION['err'] = "Registration error ".$db->errorCode();
+    } else {
+    	//echo var_dump($db->errorInfo());
+	    $_SESSION['user'] = $name.'    ';
+	    //echo $stmt->error;
+	    //echo "Done";
+	    $mailTo = $_POST['email'];
+	    $txt = "You have been successfully registered for eweek.\nYour username is".$name;
+	    $txt .= "\nYour password is ".$pass;
+	    $sub = "IIT Patna E-Week registrations";
+	    mail($mailTo,$sub,$txt);
+	    header('Location:profile.php');
     }
-    $stmt->execute();
-    if(false===$rc) {
-      die('execute() failed: ' . htmlspecialchars($stmt->error));
-    }
-    $_SESSION['user'] = $name;
-    //echo $stmt->error;
-    //echo "Done";
-    $stmt->close();
-    $mailTo = $_POST['email'];
-    $txt = "You have been successfully registered for eweek.\nYour username is".$name;
-    $txt .= "\nYour password is ".$pass;
-    $sub = "IIT Patna E-Week registrations";
-    mail($mailTo,$sub,$txt);
-    header('Location:profile.php');
   }
 } else if( $_SERVER['REQUEST_METHOD'] === "GET" ) {
   if( isset( $_GET['err'] ) ) {

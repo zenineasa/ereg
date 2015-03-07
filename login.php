@@ -12,32 +12,34 @@ if( $_SERVER['REQUEST_METHOD'] == "POST" ) {
   } else if( empty( $_POST['name'] ) || empty($_POST['password']) ) {
     $_SESSION['err'] = "Fields cannot be empty";
   }
-  $name = mysql_real_escape_string( $_POST[ 'name' ] );
-  $password = strip_tags( $_POST[ 'password' ] );
-
+  //$name = mysql_real_escape_string( $_POST[ 'name' ] );
+  //$password = strip_tags( $_POST[ 'password' ] );
+  $name = $_POST['name'];
   $query = "SELECT * FROM `users` WHERE name=?";
-  $stmt = $db_connection->prepare($query);
-  if(!$stmt) {
-    die("Failed to prepare");
-  }
-  $rc = $stmt->bind_param("s",$name);
-  $rc = $stmt->execute();
-  $result = $stmt->get_result();
-  $result = $result->fetch_array( MYSQLI_ASSOC );
-  $stmt->close();
+  try{
+    $stmt = $db->prepare($query);
+    $stmt->execute(array($name));
+  } catch( PDOException $e ) {
+      die("Query error ".$e->getMessage());
+    }
+
+  $result = $stmt->fetchAll(PDO::FETCH_ASSOC);;
   if( empty($result) ) {
     $_SESSION['err'] = "username or password is incorrect";
     //header("Loaction:login.php");
-  }
-  $salt = $result['salt'];
-  $hash = hash('sha256',$pass.$salt);
-  if( $hash === $result['pass'] ) {
-    $_SESSION['user'] = $name;
-    header('Location:profile.php');
   } else {
-    $_SESSION['err'] = "username or password is incorrect $hash ".$result['pass'];
-    //header("Loaction:login.php");
+    $result = $result[0];
+    //$salt = $result['salt'];
+    $hash = password_verify($_POST['password'],$result['pass']);
+    if( $hash ) {
+      $_SESSION['user'] = $name;
+      header('Location:profile.php');
+    } else {
+      $_SESSION['err'] = "username or password is incorrect $hash ".$result['pass'];
+      header("Loaction:login.php");
+    }
   }
+
 } else if( $_SERVER['REQUEST_METHOD'] === "GET" ) {
   if( isset( $_GET['err'] ) ) {
     $_SESSION['err'] = $_GET['err'];
