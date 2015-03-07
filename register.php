@@ -66,7 +66,7 @@ if( $_SERVER['REQUEST_METHOD'] == "POST") {
 
   $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
   if (count($result) != 0) {
-        $error = "Username or email already taken! Please choose another!".var_dump($result);
+        $error = "Username or email already taken! Please choose another!";
         $_SESSION['err'] = $error;
         //errorRedirect($error,"register.php");
         //header("Location:register.php");
@@ -97,7 +97,7 @@ if( $_SERVER['REQUEST_METHOD'] == "POST") {
 	    //echo $stmt->error;
 	    //echo "Done";
 	    $mailTo = $_POST['email'];
-	    $txt = "You have been successfully registered for eweek.\nYour username is".$name;
+	    $txt = "You have been successfully registered for eweek.\nYour username is ".$name;
 	    $txt .= "\nYour password is ".$pass;
 	    $sub = "IIT Patna E-Week registrations";
 	    mail($mailTo,$sub,$txt);
@@ -126,6 +126,7 @@ if( $_SERVER['REQUEST_METHOD'] == "POST") {
     ?>
   </div>
 </header>
+	<h1>Entrepreneurship cell IIT Patna E-Week registration</h1>
 	<div class="box">
 	  <form action="register.php" method="post">
 		<ul class="list">
@@ -137,11 +138,12 @@ if( $_SERVER['REQUEST_METHOD'] == "POST") {
 			<li>Number: <input class="inp" type="number" name="number" value="<?php if(isset($_POST['name'])){echo $_POST['number'];}?>"/></li>
 			<li>Age: <input class="inp" type="number" name="age" value="<?php if(isset($_POST['name'])){echo $_POST['age'];}?>"/></li>
 			<li><img src="./captcha.php" width="120" height="30" border="1" alt="CAPTCHA">
-			<input class="inp" type="text" size="6" maxlength="5" name="captcha" value="">
+			<input class="inp" type="text" size="6" maxlength="5" name="captcha" value="" placeholder="captcha">
 			</li>
 			<input type="hidden" name = "CSRF" value="<?php $_SESSION['csrf'] = generate_csrf(); echo $_SESSION['csrf']; ?>">
 		</ul>
-		<center><input class="button" type="submit" value="Register"/></center>
+		<input class="button" type="submit" value="Register"/>
+		<button class="button"><a href="login.php">Already a member?</a></button>
 	</form>
 	</div>
 

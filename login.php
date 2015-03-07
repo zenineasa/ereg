@@ -35,7 +35,7 @@ if( $_SERVER['REQUEST_METHOD'] == "POST" ) {
       $_SESSION['user'] = $name;
       header('Location:profile.php');
     } else {
-      $_SESSION['err'] = "username or password is incorrect $hash ".$result['pass'];
+      $_SESSION['err'] = "username or password is incorrect";
       header("Loaction:login.php");
     }
   }
@@ -53,12 +53,13 @@ if( $_SERVER['REQUEST_METHOD'] == "POST" ) {
 	</head>
 	<body>
 		<header>
+    <div class="err">
 			<?php
 			if( isset( $_SESSION['err'] ) ) {
 			echo $_SESSION['err'];
 			unset( $_SESSION['err'] );
 			}
-			?>
+			?></div>
 		</header>
     <h2 class="heading">Entrepreneurship cell IIT Patna E-Week login</h2>
 		<div class="login">
@@ -66,7 +67,8 @@ if( $_SERVER['REQUEST_METHOD'] == "POST" ) {
 			<form action="login.php" method="post">
 				<input class="inp" type="text" name="name" value="<?php if(isset($_POST['name'])){echo $_POST['name'];}?>" required="required" placeholder="Username"/>
 				<input class="inp" type="password" name="password" required="required" placeholder="Password"/>
-				<input class="button" type="submit" value="Login"/>
+				<button class="button" value="Not a member"><a href="register.php">Not a member?</a></button>
+        <input class="button" type="submit" value="Login"/>
         <input type="hidden" name = "CSRF" value="<?php $_SESSION['csrf'] = generate_csrf(); echo $_SESSION['csrf']; ?>">
       </form>
 		</div>
