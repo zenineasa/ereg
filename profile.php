@@ -57,11 +57,12 @@ $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);*/
 	</head>
 
 	<body>
-	
+
 		<div class="body">
 			<div class="topbar">
 				<div class="user"><?php echo "Welcome ".$_SESSION['user']; ?></div>
-				<div class="ops"><a href="#"><img style="" src="icons/settings.png">Settings</a> <a href="#"><img src="icons/logout.png">Logout</a></div>
+				<div class="ops"><a href="#"><img style="" src="icons/settings.png">Settings</a>
+				<a href="logout.php"><img src="icons/logout.png">Logout</a></div>
 			</div>
 			<div class="sidebar">
 
