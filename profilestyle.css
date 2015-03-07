@@ -1,0 +1,95 @@
+body{
+background:#dedede;
+padding:1em;
+font-family:Arial,Helvetica,sans-serif;
+}
+.body{
+border-radius:0.5em;
+position:absolute;
+left:50%;
+transform:translateX(-50%);
+width:75%;
+border: 1px solid #ccc;
+}
+.topbar{
+background:#111;
+border-radius:0.5em 0.5em 0 0;
+width:100% - 0.6em; /* -> Subtracting the padding so that the net width will be equal to that of the container*/
+color:#fff;
+line-height:2.5em;
+font-size:1.2em;
+padding: 0 0.6em;
+}
+.topbar a{
+border-radius:0.2em;
+padding:0.2em;
+color:#fff;
+text-decoration:none;
+}
+.topbar a:hover{
+text-decoration:underline;
+}
+.topbar img{
+height:0.75em;
+margin-right:0.25em;
+}
+.ops{
+float:right;
+}
+.user,.ops{
+display:inline;
+}
+.sidebar{
+background:#fff;
+margin:1%;
+border-radius:0.5em;
+padding:0 1% 1% 1%;
+width:20%;
+float:left;
+text-align:justify;
+}
+/* This was written initially thinking that there would be desciption after the title (link)
+.sidebar h3{
+background:#333;
+border-radius:0.3em 0.3em 0 0;
+text-align:center;
+color:#fff;
+width:100%;
+line-height:1.5em;
+margin-top:0.5em;
+margin-bottom:0;
+}
+.sidebar p{
+background:#fff;
+border-radius:0 0 0.3em 0.3em;
+padding:0.3em;
+margin:0;
+border: 1px solid #ccc;
+}*/
+.sidebar li{
+background:#333;
+font-size:1.2em;
+border-radius:0.3em;
+text-align:center;
+color:#fff;
+width:100%;
+line-height:1.5em;
+margin-top:0.5em;
+margin-bottom:0;
+}
+.sidebar li:hover{
+background:#666;
+}
+.main{
+background:#fff;
+margin:1%;
+border-radius:0.5em;
+padding:0 1% 1% 1%;
+float:right;
+width:72%;
+text-align:justify;
+}
+hr{
+position:relative;
+top:-1em;
+}
