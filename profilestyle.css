@@ -89,7 +89,7 @@ float:right;
 width:72%;
 text-align:justify;
 }
-hr{
-position:relative;
-top:-1em;
+h2{
+margin:0.5em 0 0.5em 0;
+font-size:1.4em;
 }
